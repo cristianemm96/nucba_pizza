@@ -21,90 +21,11 @@ let faina = ["Mozzarella", "Faina"];
 let pMuzza = new Pizza(1, "Muzza", muzza, 400);
 let pNapo = new Pizza(2, "Napolitana", napolitana, 700);
 let pCala = new Pizza(3, "Calabresa", calabresa, 600);
-let pFuga = new Pizza(4, "Fugazzeta", muzza, 600);
-let pJamYM = new Pizza(5, "Jamon y Morron", muzza, 700);
-let pFaina = new Pizza(6, "Faina", muzza, 650);
+let pFuga = new Pizza(4, "Fugazzeta", fugazzetta, 600);
+let pJamYM = new Pizza(5, "Jamon y Morron", jym, 700);
+let pFaina = new Pizza(6, "Faina", faina, 650);
 
 let pizzasEnStock = [pMuzza, pNapo, pCala, pFuga, pJamYM, pFaina];
-
-//Indica si el id pasado por parametro es impar.
-let esImpar = (id) => id % 2 != 0;
-
-function pizzaConIdImpar(array) {
-  //Devuelve todas las pizzas con id impar del array pasado por parametro.
-  let pizzaIdImpar = [];
-  for (let i = 0; i < array.length; i++) {
-    if (esImpar(array[i].getId())) {
-      pizzaIdImpar.push(array[i].getNombre());
-    }
-  }
-  return pizzaIdImpar;
-}
-
-//Indica si la pizza pasada por parametro es menor al precio pasado por parametro
-let esMasBarataQue = (precioA, precioB) => precioA < precioB;
-
-function masBaratasQue(array, precio) {
-  //Devuelve todas las pizzas del array pasado por parametro
-  //que sean menores al precio pasado por parametro.
-  let pizzasEconomicas = [];
-  for (let i = 0; i < array.length; i++) {
-    if (esMasBarataQue(array[i].getPrecio(), precio)) {
-      pizzasEconomicas.push(array[i].getNombre());
-    }
-  }
-  if (pizzasEconomicas.length == 0) {
-    return "no hay pizzas con un precio menor a " + precio;
-  } else {
-    return (
-      "las pizzas con precio menor a " + precio + " son: " + pizzasEconomicas
-    );
-  }
-}
-
-function nombreDeLasPizzas(array) {
-  //Obtiene los nombres de todas las pizzas del array
-  let nombreDePizza = (pizza) => pizza.getNombre();
-  return obtenerInformacionDePizza(array, nombreDePizza);
-}
-
-function preciosDeLasPizzas(array) {
-  //Obtiene los precios de todas las pizzas del array.
-  let preciosDePizza = (pizza) => pizza.getPrecio();
-  return obtenerInformacionDePizza(array, preciosDePizza);
-}
-
-function obtenerInformacionDePizza(array, callBack) {
-  //Obtiene la información solicitada por el callback.
-  let informacion = [];
-  for (let i = 0; i < array.length; i++) {
-    informacion.push(callBack(array[i]));
-  }
-  return informacion;
-}
-
-function pizzasYSusPrecios(arrayP) {
-  //Devuelve los nombres de las pizzas junto a sus precios.
-  let todosLosPrecios = preciosDeLasPizzas(arrayP);
-  let todosLosNombres = nombreDeLasPizzas(arrayP);
-  let preciosYNombres = [];
-  for (let i = 0; i < todosLosPrecios.length; i++) {
-    let precioYNombreActual =
-      " de " + todosLosNombres[i] + ": " + todosLosPrecios[i];
-    preciosYNombres.push(precioYNombreActual);
-  }
-  return preciosYNombres;
-}
-/*
-function printPizzas(arrayP){
-    console.log('Las pizzas con id impar, son: ' + pizzaConIdImpar(arrayP));
-    console.log("En este momento, "+ masBaratasQue(arrayP, 600));
-    console.log('Los nombres de todas las pizzas, son: ' + nombreDeLasPizzas(arrayP));
-    console.log('Las precios de todas las pizzas, son: ' + preciosDeLasPizzas(arrayP));
-    console.log('Los valores de las pizzas, son: ' + pizzasYSusPrecios(arrayP));
-}
-*/
-//printPizzas(pizzasEnStock);
 
 const $form = document.querySelector("form");
 const $num = document.querySelector("#numeroPizza");
@@ -113,6 +34,9 @@ const $precio = document.querySelector("#precio");
 const $foto = document.querySelector("#pizza_img");
 const $foto_container = document.querySelector("#img_container");
 const $container = document.querySelector(".container");
+const $infoPizza = document.querySelector("#info_pizza_container");
+const $ingreContainer = document.querySelector(".ingredientes_container");
+const $error_container = document.querySelector(".error_container");
 
 $form.addEventListener("submit", (e) => {
   //Se acciona al presionar el submit
@@ -120,56 +44,154 @@ $form.addEventListener("submit", (e) => {
   buscarPizza($num.value);
 });
 
-function buscarPizza(val) {
+function buscarPizza(id) {
   //Si existe el id de la pizza la imprime,
   //Sino devuelve un error.
-  if (val <= pizzasEnStock.length) {
-    imprimirDatosDePizzaId(val);
+  if (esUnIdValido(id)) {
+    imprimirDatosDePizzaId(id);
   } else {
-    imprimirError();
+    imprimirError(id);
   }
 }
-function imprimirError() {
-  //Devuelve un error por el elemento #nombre
-  $nombrePizza.textContent = "¡No hay pizzas con ese id!";
-  $precio.textContent = "";
-  actualizarEstilos(
-    [$foto, $container, $nombrePizza],
-    ["display:none", "height:110px", "color:red"]
+
+const imprimirDatosDePizzaId = (id) => {
+  //Imprime los datos de la pizza con el id dado.
+  const pizza = pizzasEnStock.filter((pizza) => pizza.getId() == id);
+  actualizarInformacionHTMLDePizza(pizza[0]);
+};
+
+const actualizarInformacionHTMLDePizza = (pizza) => {
+  //Actualiza los elementos del dom de la pizza, con los datos de la
+  //pizza actual.
+  actualizarEstiloDe(
+    [$infoPizza, $container, $error_container],
+    ["display:flex", "width:350px", "display:none"]
   );
-}
+  actualizarImgHTMLDePizza(pizza);
+  actualizarNombreHTMLDePizza(pizza);
+  actualizarPrecioHTMLDePizza(pizza);
+  actualizarIngredientesHTMLDePizza(pizza);
+};
 
-function imprimirDatosDePizzaId(pizzaId) {
-  //Muestra la pizza en el documento html.
-  const { nombre, precio } = obtenerNombreYPrecio(pizzaId);
-  actualizarEstilos(
-    [$nombrePizza, $container, $foto_container],
-    ["color:rgb(160,95,9)", "height:200px", "display:block"]
-  );
-  actualizarElementosHTML(nombre, precio);
-}
-
-function obtenerNombreYPrecio(pizzaId) {
-  //Devuele el nombre y precio del id de la pizza enviada por parametro
-  const pizza = pizzasEnStock.filter((p) => p.id == pizzaId);
-  const nombre = pizza[0].getNombre();
-  const precio = pizza[0].getPrecio();
-  return { nombre, precio };
-}
-
-function actualizarElementosHTML(nombre, precio) {
-  //Actualiza los elementos html, con nombre y precio
-  //de la pizza dada. Además le agrega una imagen de cada pizza.
-  $nombrePizza.textContent = `Pizza: ${nombre}`;
-  $precio.textContent = `Precio: $${precio}`;
-  $foto.setAttribute("src", `./images/${nombre}.webp`);
-  $foto.style = "display:block";
-}
-
-const actualizarEstilos = (elementos, propiedades) => {
-  //Actualiza los estilos del array de elementos,
-  //con las propiedades del array dadas.
-  for (let i = 0; i < elementos.length; i++) {
-    elementos[i].style = `${propiedades[i]}`;
+const actualizarEstiloDe = (elems, propiedades) => {
+  //Actualiza la propiedad de los elementos dados, con las
+  //propiedades dadas.
+  for (let i = 0; i < elems.length; i++) {
+    elems[i].style = propiedades[i];
   }
+};
+
+const actualizarImgHTMLDePizza = (pizza) => {
+  //Actualiza la img de la pizza, con la foto de la pizza dada.
+  let nombrePizza = pizza.getNombre();
+  $foto.setAttribute("src", `./images/${nombrePizza}.webp`);
+};
+
+const actualizarNombreHTMLDePizza = (pizza) => {
+  //Actualiza el input del nombre de pizza, con el nombre de la pizza dada.
+  $nombrePizza.textContent = `${pizza.getNombre()}`;
+};
+
+const actualizarPrecioHTMLDePizza = (pizza) => {
+  //Actualiza el input del precio de pizza, con el nombre de la pizza dada.
+  $precio.textContent = `$ ${pizza.getPrecio()}`;
+};
+
+const actualizarIngredientesHTMLDePizza = (pizza) => {
+  //Actualiza el container de ingredientes, con los ingredientes de la pizza dada.
+  eliminarElemChildSiCorrespondeDe($ingreContainer);
+  mostrarIngredientesDePizza(pizza);
+};
+
+const eliminarElemChildSiCorrespondeDe = (elem) => {
+  //Si el elemento del dom dado, tiene childs, los elimina. 
+  if (elem.lastChild) {
+    elem.removeChild(elem.lastChild);
+  }
+};
+
+const mostrarIngredientesDePizza = (pizza) => {
+  //Agrega un parrafo con los ingredientes de la pizza dada,
+  // al container html de ingredientes.
+  let parrafo = setearStringIngredientes(pizza);
+  let parrafoElem = document.createElement("p");
+  parrafoElem.textContent = parrafo;
+  $ingreContainer.appendChild(parrafoElem);
+};
+
+function esUnIdValido(id) {
+  //Describe si el id dado es valido.
+  return id && id <= getIdMax() && id >= getIdMin();
+}
+
+function setearStringIngredientes(pizza) {
+  //Da forma al texto de los ingredientes de la pizza dada
+  //para mostrarlos en pantalla.
+  let parrafo = "";
+  let ingredientes = pizza.getIngredientes();
+  parrafo = ingredientes.join(", ");
+  let indice = parrafo.lastIndexOf(",");
+  let pre = parrafo.slice(0, indice);
+  let pos = parrafo.slice(indice + 1);
+  return pre + " y" + pos + ".";
+}
+
+const imprimirError = (id) => {
+  //Actualiza el container de error según el error correspondiente.
+  eliminarElemChildSiCorrespondeDe($error_container);
+  if (id) {
+    setearHTMLParaErrorSinValue();
+  } else {
+    setearHTMLParaErrorConValue();
+  }
+};
+
+function setearHTMLParaErrorConValue() {
+  //Actualiza el container de error cuando el error
+  //se trata de un id invalido.
+  let msgError = "Por favor ingrese un ID.";
+  actualizarEstiloDe(
+    [$infoPizza, $container, $container, $error_container],
+    ["display:none", "width:200px", "height:200px", "display:flex"]
+  );
+  setMsgError(msgError);
+}
+
+function setearHTMLParaErrorSinValue() {
+  //Actualiza el container de error cuando el usuario
+  //no ingresa un valor.
+  let min = getIdMin();
+  let max = getIdMax();
+  let msgError = `No hay Pizzas con ese ID! Ingrese un ID entre ${min} y ${max}`;
+  actualizarEstiloDe(
+    [$infoPizza, $container, $container, $error_container],
+    ["display:none", "width:200px", "height:200px", "display:flex"]
+  );
+  setMsgError(msgError);
+}
+
+const setMsgError = (msgError) => {
+  //Agrega el mensaje dado, al container error.
+  let msgElem = document.createElement("h2");
+  msgElem.textContent = `${msgError}`;
+  msgElem.classList.add("msgError");
+  $error_container.appendChild(msgElem);
+};
+
+const getIdMin = () => {
+  //Devuelve el id minimo de las pizzas en stock.
+  let idEnStock = pizzasEnStock.map((pizza) => pizza.getId());
+  let min = idEnStock.reduce((min, act) => {
+    return min < act ? min : act;
+  });
+  return min
+};
+
+const getIdMax = () => {
+  //Devuelve el id maximo de las pizzas en stock
+  let idEnStock = pizzasEnStock.map((pizza) => pizza.getId());
+  let max = idEnStock.reduce((max, act) => {
+    return max > act ? max : act;
+  });
+  return max;
 };

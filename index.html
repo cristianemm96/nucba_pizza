@@ -9,16 +9,28 @@
 </head>
 <body>
     <div class="container">
-        <div id="img_container">
-            <img src="" alt="" id="pizza_img">
+        <div id="info_pizza_container">
+            <div id="img_container">
+                <img src="" alt="" id="pizza_img">
+            </div>
+            <div class="nombre_container">
+                <h2 id="nombre">
+                </h2>
+            </div>
+            <div class="precio_container">
+                <h4 id="precio">
+                </h4>
+            </div>
+            <div class="ingredientes_container">
+                <h3>Ingredientes: </h3>
+            </div>
         </div>
-        <h2 id="nombre">
-        </h2>
-        <h4 id="precio">
-        </h4>
+        <div class="error_container">
+
+        </div>
         <form action="post">
             <div id="number_input_container">
-                <input type="number" name="numeroPizza" id="numeroPizza">
+                <input type="number" name="numeroPizza" id="numeroPizza" min="0">
             </div>
             <div id="submit_button_container">
                 <input type="submit" value="Buscar" name="boton" id="boton">

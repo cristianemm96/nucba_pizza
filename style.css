@@ -7,25 +7,24 @@
 }
 
 .container{
-    margin: 30px auto;
+    margin: 80px auto;
     background-color: white;
     padding: 10px;
-    width: 135px;
-    /*height: 120px;*/
+    width: 325px;
     display: flex;
     align-items: center;
     flex-direction: column;
     background-color: bisque;
     border-radius: 10px;
+    justify-content: space-between;
 }
 
 #img_container img{
-    display: none;
-    width:100px;
-    height:80px;
+    width:210px;
+    height:150px;
     border-radius: 10px;
     border:2px solid rgb(160, 95, 9, 0.60);
-    margin: 5px auto;
+    margin: 10px auto;
 }
 
 form{
@@ -39,44 +38,42 @@ form{
 
 
 #img_container{
-    width: 150px;
-    height:80px;
-    display: none;
+    width: 210px;
+    height:160px;
+    margin: 10px;
 }
 
 #nombre, #precio{
-    font-size: 12px;
+    font-size: 17px;
     font-family: 'Odibee Sans', cursive;
     font-weight: 200;
 }
 
 #precio{
     color:rgb(160, 95, 9);
+    margin:3px 13px 0 0;
 }
 
 #nombre{
     margin-top: 10px;
+    margin-right:5px;
 }
-
-#precio{
-    margin:3px 0 5px 0;
-}
-
 
 #numeroPizza{
-    width: 40px;
+    width: 140px;
+    height: 40px;
 }
 
 #boton{
-    width: 50px;
+    width: 90px;
     background-color: rgb(160, 95, 9);
     color:white;
     border: none;
-    height: 20px;
-    margin: 4px;
+    height: 40px;
+    margin: 20px;
     border-radius: 6px;
     font-family: 'Odibee Sans', cursive;
-    font-size: 10px;
+    font-size: 15px;
 }
 
 #boton:hover{
@@ -84,3 +81,30 @@ form{
     color: white;
 }
 
+#info_pizza_container{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.msgError{
+    color: red;
+    font-size: 17px;
+    margin-top: 12px;
+    width: 188px;
+    font-family: 'Odibee Sans', cursive;
+    text-align: center;
+}
+
+.nombre_container{
+    margin-bottom: 5px;
+}
+
+.ingredientes_container{
+    text-align: center;
+    color: hsla(34, 75%, 11%, 0.993);
+    font-family: 'Odibee Sans', cursive;
+    font-size: 17px;
+    margin:10px 0 15px 0;
+}
