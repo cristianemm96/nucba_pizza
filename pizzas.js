@@ -83,7 +83,7 @@ const actualizarEstiloDe = (elems, propiedades) => {
 
 const actualizarImgHTMLDePizza = (pizza) => {
   //Actualiza la img de la pizza, con la foto de la pizza dada.
-  let nombrePizza = pizza.getNombre();
+  let nombrePizza = pizza.getNombre().toLowerCase();
   $foto.setAttribute("src", `./images/${nombrePizza}.webp`);
 };
 
